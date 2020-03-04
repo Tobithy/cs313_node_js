@@ -1,0 +1,37 @@
+<!-- views/pages/postal.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head') %>
+  <title>Postal Rate Calculator | CS 313 Prove 09</title>
+</head>
+
+<body>
+  <div class="jumbotron">
+    <h1>Postal Rate Calculator</h1>
+  </div>
+  <div class="container pt-3">
+    <p>Please enter your shipping info below</p>
+
+    <form action="/getrate">
+      <div class="form-group">
+        <label for="weight">Weight (oz)</label>
+        <input type="number" class="form-control" step="any" id="weight" name="weight" required/>
+      </div>
+      <div class="form-group">
+        <label for="mail_type">Shipping type</label>
+        <select class="form-control" name="mail_type" id="mail_type">
+          <option value="stamped_letter">Letters (Stamped)</option>
+          <option value="metered_letter">Letters (Metered)</option>
+          <option value="large_envelope">Large Envelopes (Flats)</option>
+          <option value="first_class_package">First-Class Package Service—Retail</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Get Rate</button>
+    </form>
+  </div>
+</body>
+
+</html>

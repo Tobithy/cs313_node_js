@@ -1,0 +1,27 @@
+<!-- views/pages/getrate.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head') %>
+  <title>Postal Rate Calculator - Rate display | CS 313 Prove 09</title>
+</head>
+
+<body>
+  <div class="jumbotron">
+    <h1>Postal Rate Display</h1>
+  </div>
+  <div class="container pt-3">
+    <p>You will pay $<%= rate.toFixed(2) %> to ship your <%= weight %> ounce <%= mailType %>.</p>
+  </div>
+  <div class="contejs"></div>
+</body>
+<script>
+  function makeitso() {
+    return 10;
+    
+  }
+</script>
+
+</html>
