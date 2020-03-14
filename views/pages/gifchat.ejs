@@ -1,0 +1,45 @@
+<!-- views/pages/gifchat.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head') %>
+  <title>GifChat | CS 313 Node.js Project</title>
+  <script src="/scripts/gifchat_client.js"></script>
+</head>
+
+<body>
+  <div class="jumbotron">
+    <h1>GifChat</h1>
+  </div>
+  <div class="container pt-3">
+
+    <!-- <form> -->
+      <div class="form-group">
+        <label for="userId">Type in a userId and press Retrieve to retrieve that user's information</label>
+        <input type="number" id="userId" class="form-control" required>
+      </div>
+      <button class="btn btn-primary" id="retrieveUserInfo">Retrieve</button>
+    <!-- </form> -->
+  </div>
+  <div class="container pt-3" id="userinfo">
+
+  </div>
+  
+  <div class="container pt-3">
+  
+    <!-- <form> -->
+    <div class="form-group">
+      <label for="searchPhrase">Search GIPHY</label>
+      <input type="text" id="searchPhrase" class="form-control" required>
+    </div>
+    <button class="btn btn-primary" id="searchGiphy">Search GIPHY</button>
+    <!-- </form> -->
+  </div>
+  <div class="container pt-3" id="gifResults">
+  
+  </div>
+</body>
+
+</html>
