@@ -16,12 +16,27 @@ $(document).ready(function () {
     let search = { searchPhrase: $("#searchPhrase").val() };
     $.post("/gifsearch", search, function (data, status) {
       let gifs = data.data; // the data object has...data
-      let gifhtml = '';
+      let gifList = $(document.createElement('ul'));
       gifs.forEach(element => {
-        gifhtml += '<video autoplay loop><source src="' + element.images.fixed_width.mp4 + '" type="video/mp4"></video><br><br>';
+        let li = $(document.createElement('li'));
+        let v = $(document.createElement('video'));
+        v.attr('autoplay', '');
+        v.attr('loop', '');
+        v.html('<source src="' + element.images.fixed_width.mp4 + '" type="video/mp4">');
+        li.html(v);
+        gifList.append(li);
       });
-      $("#gifResults").html(gifhtml);
+      $("#gifResults").html(gifList);
     });
   });
 
 });
+
+// place gif into chatarea
+function postGif(url) {
+  let v = $(document.createElement('video'));
+  v.setAttribute('autoplay', '');
+  v.setAttribute('loop', '');
+  v.html('<source src="' + url + '" type="video/mp4">');
+  $("#chatArea").html = v;
+}

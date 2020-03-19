@@ -119,33 +119,34 @@ async function handleDb (req, res) {
   });
 }
 
-app.get('/getuser', function (req, res) {
-  let userId = req.query.userId;
-  var resRows;
-  var sql1 = "SELECT * FROM user_account WHERE user_account_id = " + userId;
-  pool.query(sql1, function (err, result) {
-    // If an error occurred...
-    if (err || result.rowCount != 1) {
-      res.status(500).json({success: false, data: err});
-      console.log("Error in query: ")
-      console.log(err);
-      return;
-    }
+// app.get('/getuser', function (req, res) {
+//   let userId = req.query.userId;
+//   var resRows;
+//   var sql1 = "SELECT * FROM user_account WHERE user_account_id = " + userId;
+//   pool.query(sql1, function (err, result) {
+//     // If an error occurred...
+//     if (err || result.rowCount != 1) {
+//       res.status(500).json({success: false, data: err});
+//       console.log("Error in query: ")
+//       console.log(err);
+//       return;
+//     }
 
-    // Log this to the console for debugging purposes.
-    console.log("Back from DB with result:");
-    resRows = result.rows;
-    // resRows = [resRows[0], resRows[0]];
-    console.log(resRows);
-    res.status(200).json(resRows);
-  });
-});
+//     // Log this to the console for debugging purposes.
+//     console.log("Back from DB with result:");
+//     resRows = result.rows;
+//     // resRows = [resRows[0], resRows[0]];
+//     console.log(resRows);
+//     res.status(200).json(resRows);
+//   });
+// });
 
 
 //////////// Model (business logic) ////////////////
 // function calculateRate
 //  weight is in ounces
 //  returns the rate for valid weights, but for invalid we return 999. i.e. no real bounds checking.
+
 function calculateRate(weight, mailType) {
   let rate = 0.0;
   // determine what kind of shipment

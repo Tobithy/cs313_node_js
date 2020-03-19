@@ -7,39 +7,183 @@
   <%- include('../partials/head') %>
   <title>GifChat | CS 313 Node.js Project</title>
   <script src="/scripts/gifchat_client.js"></script>
+  <!-- Page specific css -->
+  <link rel="stylesheet" type="text/css" href="/stylesheets/gifchat.css" />
 </head>
 
 <body>
-  <div class="jumbotron">
-    <h1>GifChat</h1>
-  </div>
-  <div class="container pt-3">
 
-    <!-- <form> -->
-      <div class="form-group">
-        <label for="userId">Type in a userId and press Retrieve to retrieve that user's information</label>
-        <input type="number" id="userId" class="form-control" required>
-      </div>
-      <button class="btn btn-primary" id="retrieveUserInfo">Retrieve</button>
-    <!-- </form> -->
-  </div>
-  <div class="container pt-3" id="userinfo">
-
-  </div>
-  
-  <div class="container pt-3">
-  
-    <!-- <form> -->
-    <div class="form-group">
-      <label for="searchPhrase">Search GIPHY</label>
-      <input type="text" id="searchPhrase" class="form-control" required>
+  <header>
+    <div class="jumbotron">
+      <h1>GifChat</h1>
     </div>
-    <button class="btn btn-primary" id="searchGiphy">Search GIPHY</button>
-    <!-- </form> -->
-  </div>
-  <div class="container pt-3" id="gifResults">
+  </header>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="form-group">
+        <label for="searchPhrase">Search GIPHY</label>
+        <input type="text" id="searchPhrase" class="form-control" required>
+      </div>
+      <button class="btn btn-primary" id="searchGiphy">Search GIPHY</button>
+    </div>
+    <div class="container pt-3" id="gifResults"></div>
+  </aside>
+
+  <section class="main">
+    <div class="container pt-3">
+    
+      <!-- <form> -->
+        <div class="form-group">
+          <label for="userId">Type in a userId and press Retrieve to retrieve that user's information</label>
+          <input type="number" id="userId" class="form-control" required>
+        </div>
+        <button class="btn btn-primary" id="retrieveUserInfo">Retrieve</button>
+      <!-- </form> -->
+    </div>
+    <div class="container pt-3" id="userinfo">
+    
+    </div>
+    
+    <div class="container pt-3" id="gifResults"></div>
+    <div class="container pt-3">
+      <h2 class="display-5">Chat Area</h2>
+      <div class="container pt-3" id="chatArea"></div>
+    
+    </div>
+    <h2>Chapter 2</h2>
+    <p>Ennui Williamsburg Echo Park pork belly, hella flannel single-origin coffee. Bicycle rights artisan beard Neutra
+      cardigan Echo Park. Shoreditch flannel tote bag pug jean shorts post-ironic semiotics cornhole forage. Skateboard
+      aesthetic synth leggings Banksy. Shabby chic PBR plaid helvetica dreamcatcher tousled, irony ethnic Tonx sustainable
+      before they sold out McSweeney's. Hoodie Banksy freegan bicycle rights, aesthetic try-hard fap ethnic deep v fixie.
+      Before they sold out +1 ugh, Bushwick Wes Anderson cred Marfa synth butcher jean shorts Terry Richardson.</p>
+
+    <p>3 wolf moon blue bottle Truffaut ennui Bushwick, VHS organic skateboard authentic pickled tattooed brunch kogi
+      freegan McSweeney's. Lomo skateboard american apparel, gastropub Schlitz food truck blue bottle. Salvia shoreditch
+      ennui asymmetrical Williamsburg. Cliche umami mumblecore asymmetrical disrupt craft beer, selvage whatever
+      sustainable american apparel YOLO Portland organic. Fashion axe mixtape salvia, Wes Anderson cred food truck DIY. Yr
+      Pinterest Portland Truffaut four loko, semiotics Vice. Authentic lomo bitters, mlkshk raw denim beard narwhal jean
+      shorts cliche tousled PBR.</p>
+
+    <p>Wolf irony Schlitz, ethical gastropub disrupt cray. Skateboard High Life viral, try-hard pitchfork pour-over fap
+      next level. High Life butcher meh, Vice single-origin coffee Marfa intelligentsia farm-to-table gentrify occupy
+      cardigan helvetica salvia vegan. Bicycle rights chillwave keytar before they sold out, narwhal Brooklyn mustache.
+      Plaid literally Schlitz Carles, stumptown swag chillwave Echo Park vinyl jean shorts McSweeney's roof party bespoke.
+      Small batch banjo salvia Terry Richardson 3 wolf moon wolf twee hella. Occupy farm-to-table tattooed tousled twee
+      pug.</p>
+
+    <p>Disrupt umami kogi selvage hoodie. YOLO brunch chambray beard, Schlitz intelligentsia Austin. Fanny pack iPhone
+      semiotics Tonx flexitarian, disrupt tote bag hoodie dreamcatcher Portland ugh. Truffaut plaid cardigan, ethnic
+      mustache actually master cleanse Pinterest deep v brunch. Shoreditch kale chips Odd Future typewriter Echo Park,
+      artisan pug pour-over disrupt american apparel wayfarers. DIY semiotics chillwave cardigan gluten-free freegan.
+      Tumblr keffiyeh art party, jean shorts viral put a bird on it irony hella gluten-free whatever cornhole deep v.</p>
+
+    <p>Ennui Williamsburg Echo Park pork belly, hella flannel single-origin coffee. Bicycle rights artisan beard Neutra
+      cardigan Echo Park. Shoreditch flannel tote bag pug jean shorts post-ironic semiotics cornhole forage. Skateboard
+      aesthetic synth leggings Banksy. Shabby chic PBR plaid helvetica dreamcatcher tousled, irony ethnic Tonx sustainable
+      before they sold out McSweeney's. Hoodie Banksy freegan bicycle rights, aesthetic try-hard fap ethnic deep v fixie.
+      Before they sold out +1 ugh, Bushwick Wes Anderson cred Marfa synth butcher jean shorts Terry Richardson.</p>
+
+    <p>3 wolf moon blue bottle Truffaut ennui Bushwick, VHS organic skateboard authentic pickled tattooed brunch kogi
+      freegan McSweeney's. Lomo skateboard american apparel, gastropub Schlitz food truck blue bottle. Salvia shoreditch
+      ennui asymmetrical Williamsburg. Cliche umami mumblecore asymmetrical disrupt craft beer, selvage whatever
+      sustainable american apparel YOLO Portland organic. Fashion axe mixtape salvia, Wes Anderson cred food truck DIY. Yr
+      Pinterest Portland Truffaut four loko, semiotics Vice. Authentic lomo bitters, mlkshk raw denim beard narwhal jean
+      shorts cliche tousled PBR.</p>
+
+    <p>Wolf irony Schlitz, ethical gastropub disrupt cray. Skateboard High Life viral, try-hard pitchfork pour-over fap
+      next level. High Life butcher meh, Vice single-origin coffee Marfa intelligentsia farm-to-table gentrify occupy
+      cardigan helvetica salvia vegan. Bicycle rights chillwave keytar before they sold out, narwhal Brooklyn mustache.
+      Plaid literally Schlitz Carles, stumptown swag chillwave Echo Park vinyl jean shorts McSweeney's roof party bespoke.
+      Small batch banjo salvia Terry Richardson 3 wolf moon wolf twee hella. Occupy farm-to-table tattooed tousled twee
+      pug.</p>
+
+    <p>Disrupt umami kogi selvage hoodie. YOLO brunch chambray beard, Schlitz intelligentsia Austin. Fanny pack iPhone
+      semiotics Tonx flexitarian, disrupt tote bag hoodie dreamcatcher Portland ugh. Truffaut plaid cardigan, ethnic
+      mustache actually master cleanse Pinterest deep v brunch. Shoreditch kale chips Odd Future typewriter Echo Park,
+      artisan pug pour-over disrupt american apparel wayfarers. DIY semiotics chillwave cardigan gluten-free freegan.
+      Tumblr keffiyeh art party, jean shorts viral put a bird on it irony hella gluten-free whatever cornhole deep v.</p>
+
+    <p>Ennui Williamsburg Echo Park pork belly, hella flannel single-origin coffee. Bicycle rights artisan beard Neutra
+      cardigan Echo Park. Shoreditch flannel tote bag pug jean shorts post-ironic semiotics cornhole forage. Skateboard
+      aesthetic synth leggings Banksy. Shabby chic PBR plaid helvetica dreamcatcher tousled, irony ethnic Tonx sustainable
+      before they sold out McSweeney's. Hoodie Banksy freegan bicycle rights, aesthetic try-hard fap ethnic deep v fixie.
+      Before they sold out +1 ugh, Bushwick Wes Anderson cred Marfa synth butcher jean shorts Terry Richardson.</p>
+
+    <p>3 wolf moon blue bottle Truffaut ennui Bushwick, VHS organic skateboard authentic pickled tattooed brunch kogi
+      freegan McSweeney's. Lomo skateboard american apparel, gastropub Schlitz food truck blue bottle. Salvia shoreditch
+      ennui asymmetrical Williamsburg. Cliche umami mumblecore asymmetrical disrupt craft beer, selvage whatever
+      sustainable american apparel YOLO Portland organic. Fashion axe mixtape salvia, Wes Anderson cred food truck DIY. Yr
+      Pinterest Portland Truffaut four loko, semiotics Vice. Authentic lomo bitters, mlkshk raw denim beard narwhal jean
+      shorts cliche tousled PBR.</p>
+
+    <p>Wolf irony Schlitz, ethical gastropub disrupt cray. Skateboard High Life viral, try-hard pitchfork pour-over fap
+      next level. High Life butcher meh, Vice single-origin coffee Marfa intelligentsia farm-to-table gentrify occupy
+      cardigan helvetica salvia vegan. Bicycle rights chillwave keytar before they sold out, narwhal Brooklyn mustache.
+      Plaid literally Schlitz Carles, stumptown swag chillwave Echo Park vinyl jean shorts McSweeney's roof party bespoke.
+      Small batch banjo salvia Terry Richardson 3 wolf moon wolf twee hella. Occupy farm-to-table tattooed tousled twee
+      pug.</p>
+
+    <p>Disrupt umami kogi selvage hoodie. YOLO brunch chambray beard, Schlitz intelligentsia Austin. Fanny pack iPhone
+      semiotics Tonx flexitarian, disrupt tote bag hoodie dreamcatcher Portland ugh. Truffaut plaid cardigan, ethnic
+      mustache actually master cleanse Pinterest deep v brunch. Shoreditch kale chips Odd Future typewriter Echo Park,
+      artisan pug pour-over disrupt american apparel wayfarers. DIY semiotics chillwave cardigan gluten-free freegan.
+      Tumblr keffiyeh art party, jean shorts viral put a bird on it irony hella gluten-free whatever cornhole deep v.</p>
+
+
+    <p>Ennui Williamsburg Echo Park pork belly, hella flannel single-origin coffee. Bicycle rights artisan beard Neutra
+      cardigan Echo Park. Shoreditch flannel tote bag pug jean shorts post-ironic semiotics cornhole forage. Skateboard
+      aesthetic synth leggings Banksy. Shabby chic PBR plaid helvetica dreamcatcher tousled, irony ethnic Tonx sustainable
+      before they sold out McSweeney's. Hoodie Banksy freegan bicycle rights, aesthetic try-hard fap ethnic deep v fixie.
+      Before they sold out +1 ugh, Bushwick Wes Anderson cred Marfa synth butcher jean shorts Terry Richardson.</p>
+
+    <p>3 wolf moon blue bottle Truffaut ennui Bushwick, VHS organic skateboard authentic pickled tattooed brunch kogi
+      freegan McSweeney's. Lomo skateboard american apparel, gastropub Schlitz food truck blue bottle. Salvia shoreditch
+      ennui asymmetrical Williamsburg. Cliche umami mumblecore asymmetrical disrupt craft beer, selvage whatever
+      sustainable american apparel YOLO Portland organic. Fashion axe mixtape salvia, Wes Anderson cred food truck DIY. Yr
+      Pinterest Portland Truffaut four loko, semiotics Vice. Authentic lomo bitters, mlkshk raw denim beard narwhal jean
+      shorts cliche tousled PBR.</p>
+
+    <p>Wolf irony Schlitz, ethical gastropub disrupt cray. Skateboard High Life viral, try-hard pitchfork pour-over fap
+      next level. High Life butcher meh, Vice single-origin coffee Marfa intelligentsia farm-to-table gentrify occupy
+      cardigan helvetica salvia vegan. Bicycle rights chillwave keytar before they sold out, narwhal Brooklyn mustache.
+      Plaid literally Schlitz Carles, stumptown swag chillwave Echo Park vinyl jean shorts McSweeney's roof party bespoke.
+      Small batch banjo salvia Terry Richardson 3 wolf moon wolf twee hella. Occupy farm-to-table tattooed tousled twee
+      pug.</p>
+
+    <p>Disrupt umami kogi selvage hoodie. YOLO brunch chambray beard, Schlitz intelligentsia Austin. Fanny pack iPhone
+      semiotics Tonx flexitarian, disrupt tote bag hoodie dreamcatcher Portland ugh. Truffaut plaid cardigan, ethnic
+      mustache actually master cleanse Pinterest deep v brunch. Shoreditch kale chips Odd Future typewriter Echo Park,
+      artisan pug pour-over disrupt american apparel wayfarers. DIY semiotics chillwave cardigan gluten-free freegan.
+      Tumblr keffiyeh art party, jean shorts viral put a bird on it irony hella gluten-free whatever cornhole deep v.</p>
+
+
+    <p>Ennui Williamsburg Echo Park pork belly, hella flannel single-origin coffee. Bicycle rights artisan beard Neutra
+      cardigan Echo Park. Shoreditch flannel tote bag pug jean shorts post-ironic semiotics cornhole forage. Skateboard
+      aesthetic synth leggings Banksy. Shabby chic PBR plaid helvetica dreamcatcher tousled, irony ethnic Tonx sustainable
+      before they sold out McSweeney's. Hoodie Banksy freegan bicycle rights, aesthetic try-hard fap ethnic deep v fixie.
+      Before they sold out +1 ugh, Bushwick Wes Anderson cred Marfa synth butcher jean shorts Terry Richardson.</p>
+
+    <p>3 wolf moon blue bottle Truffaut ennui Bushwick, VHS organic skateboard authentic pickled tattooed brunch kogi
+      freegan McSweeney's. Lomo skateboard american apparel, gastropub Schlitz food truck blue bottle. Salvia shoreditch
+      ennui asymmetrical Williamsburg. Cliche umami mumblecore asymmetrical disrupt craft beer, selvage whatever
+      sustainable american apparel YOLO Portland organic. Fashion axe mixtape salvia, Wes Anderson cred food truck DIY. Yr
+      Pinterest Portland Truffaut four loko, semiotics Vice. Authentic lomo bitters, mlkshk raw denim beard narwhal jean
+      shorts cliche tousled PBR.</p>
+
+    <p>Wolf irony Schlitz, ethical gastropub disrupt cray. Skateboard High Life viral, try-hard pitchfork pour-over fap
+      next level. High Life butcher meh, Vice single-origin coffee Marfa intelligentsia farm-to-table gentrify occupy
+      cardigan helvetica salvia vegan. Bicycle rights chillwave keytar before they sold out, narwhal Brooklyn mustache.
+      Plaid literally Schlitz Carles, stumptown swag chillwave Echo Park vinyl jean shorts McSweeney's roof party bespoke.
+      Small batch banjo salvia Terry Richardson 3 wolf moon wolf twee hella. Occupy farm-to-table tattooed tousled twee
+      pug.</p>
+
+    <p>Disrupt umami kogi selvage hoodie. YOLO brunch chambray beard, Schlitz intelligentsia Austin. Fanny pack iPhone
+      semiotics Tonx flexitarian, disrupt tote bag hoodie dreamcatcher Portland ugh. Truffaut plaid cardigan, ethnic
+      mustache actually master cleanse Pinterest deep v brunch. Shoreditch kale chips Odd Future typewriter Echo Park,
+      artisan pug pour-over disrupt american apparel wayfarers. DIY semiotics chillwave cardigan gluten-free freegan.
+      Tumblr keffiyeh art party, jean shorts viral put a bird on it irony hella gluten-free whatever cornhole deep v.</p>
+  </section>
   
-  </div>
 </body>
 
 </html>
