@@ -1,14 +1,23 @@
-// AJAX to get and display user information
-$(document).ready(function () {
-  $("#retrieveUserInfo").click(function () {
-    let user = { userId: $("#userId").val()};
-    $.post("/retrieveuser", user, function(data, status) {
-      let user = data[0];
-      $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
-    });
-  });
+// AJAX to get and display user information. This was mainly for testing purposes.
+// $(document).ready(function () {
+//   $("#retrieveUserInfo").click(function () {
+//     let user = { userId: $("#userId").val()};
+//     $.post("/retrieveuser", user, function(data, status) {
+//       let user = data[0];
+//       $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
+//     });
+//   });
+// });
 
-});
+// Message constructor. This is the main data type we will pass back and forth to the server
+//  username - the current user's username (we will check this serverside and refuse to post if it doesn't match)
+//  text - the text of the message being posted (note: we need to )
+//  gifUrl - the url of a gif to include in the message. This is optional.
+function Message(username, text, gifUrl) {
+  this.username = username;
+  this.text = text;
+  this.gifUrl = gifUrl;
+}
 
 // AJAX to get and display GIFs
 $(document).ready(function () {
@@ -20,23 +29,148 @@ $(document).ready(function () {
       gifs.forEach(element => {
         let li = $(document.createElement('li'));
         let v = $(document.createElement('video'));
-        v.attr('autoplay', '');
-        v.attr('loop', '');
-        v.html('<source src="' + element.images.fixed_width.mp4 + '" type="video/mp4">');
+        v.attr({
+          autoplay: '',
+          loop: '',
+          class: 'clickableGif', 
+          id: element.images.original.mp4
+        });
+        v.append(
+          $('<source>').attr({
+            src: element.images.fixed_width.mp4,
+            type: 'video/mp4'
+          })
+        );
+        // v.html('<source src="' + element.images.fixed_width.mp4 + '" type="video/mp4">');
         li.html(v);
         gifList.append(li);
       });
       $("#gifResults").html(gifList);
+      $(".clickableGif").click(postGif);    // this is what makes it possible for a gif to be posted. 
     });
   });
 
 });
 
-// place gif into chatarea
-function postGif(url) {
-  let v = $(document.createElement('video'));
-  v.setAttribute('autoplay', '');
-  v.setAttribute('loop', '');
-  v.html('<source src="' + url + '" type="video/mp4">');
-  $("#chatArea").html = v;
+// Function to click button when enter is pressed in the Search GIPHY area
+$(document).ready(function () {
+  $("#searchPhrase").keyup(function(e) {
+    if (e.keyCode === 13) {
+      $("#searchGiphy").click();
+    }
+  });
+});
+
+// place gif Url into the text field designated for it
+function postGif(event) {
+  $("#gifUrl").val(event.currentTarget.id);
+}
+
+
+// let amessage = new Message("tobit", "Hello, and welcome to my chat room");
+// amessage.newprop = "this is a new property";
+
+// $.post("/postmessage", amessage, function (data, status) {
+//   let anothermessage = data;
+//   console.log(anothermessage);
+//   console.log(!!anothermessage.gifId)
+//   // $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
+// });
+
+
+// $(document).ready(function() {
+//   $("#classout").html(JSON.stringify(amessage));
+// })
+
+// create message and post to server. For testing right now, need to make username automatic
+$(document).ready(function() {
+  $("#postMessage").click(function() {
+    // make the message
+    let newMessage = new Message($("#username").val(), $("#message").val(), $("#gifUrl").val());
+    $.post({
+      url: '/postmessage', 
+      data: newMessage, 
+      statusCode: {
+        400: function() {
+          toggleHideShow($("#messagenotpostedalert"));
+          setTimeout(toggleHideShow, 2000, $("#messagenotpostedalert"));
+        },
+        200: function(data) {
+          console.log(data);
+          $("#message").val('');
+          $("#gifUrl").val('');
+        }
+      }
+    });
+  });
+});
+
+// Function to retrieve chats from server. This keeps calling over and over every few seconds to update the 
+//  chat area. 
+var interval = 3000;  // 3 seconds
+var clientMessageId = 0;  // the last message we received. Start at message zero. 
+function doAjax() {
+  let clientMessageIdObject = {clientMessageId: clientMessageId};
+  $.post({
+    url: '/getmessages',
+    data: clientMessageIdObject,
+    success: function (data) {
+      data.forEach(element => {
+        let p = createHtmlMessage(element);
+        $('#chatArea').prepend(p);
+        clientMessageId = element.messageId;
+      });
+    },
+    complete: function () {
+      setTimeout(doAjax, interval);
+    }
+  });
+}
+doAjax();   // kick off the loop
+
+// function to create an HTML <p> from a message
+function createHtmlMessage(message) {
+  let p = $(document.createElement('p'));
+  p.append('<strong>' + message.username + '</strong>: ' + message.text);
+
+  // if there is a gifUrl, include that too
+  if (!!message.gifUrl) {
+    let v = $(document.createElement('video'));
+    v.attr('autoplay', '');
+    v.attr('loop', '');
+    v.append(
+      $('<source>').attr({
+        src: message.gifUrl,
+        type: 'video/mp4'
+      })
+    );
+    p.append('<br>'); // make sure we get a new line
+    p.append(v);
+  }
+
+  return p;
+}
+
+
+// Function to click button when ctrl+enter is pressed in the Message textarea
+$(document).ready(function () {
+  $("#message").keyup(function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
+      $("#postMessage").click();
+    }
+  });
+});
+
+
+// button to show failed post, for TESTING ONLY!
+$(document).ready(function () {
+  $("#togglealert").click(function () {
+    toggleHideShow($("#messagenotpostedalert"));
+    setTimeout(toggleHideShow, 2000, $("#messagenotpostedalert"));
+  });
+});
+
+// toggle hide/show classes for bootstrap alert 
+function toggleHideShow(jqelement) {
+  jqelement.toggleClass("show").toggleClass("hide");
 }

@@ -1,3 +1,14 @@
+/* Jumbotron reduce height */
+.jumbotron {
+  padding: 1rem 2rem;
+}
+
+/* make alerts much smaller */
+.alert {
+  padding: 0;
+  margin-bottom: 0;
+}
+
 /* sidebar stuff */
 
 html, body {
@@ -20,7 +31,7 @@ body {
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 200px;
+  top: 5.5rem;
   bottom: 0px;
 }
 
@@ -33,6 +44,7 @@ body {
 .sidebar .sidebar-header {
   position: fixed;
   padding-left: 0.5em;
+  padding-bottom: 0.5em;
   background-color: seashell;
   width: 243px;
 }
@@ -59,6 +71,10 @@ aside li {
   /* color: #ccc; */
   /* background-color: #333; */
   /* border-left: 10px solid transparent; */
+}
+
+.clickableGif:hover {
+  cursor: pointer;
 }
 
 /**************** Unused sidebar stuff *****************/

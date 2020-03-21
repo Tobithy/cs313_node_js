@@ -9,6 +9,12 @@ const giphy = require('giphy-api')(); // use the public beta key for now
 //  and we need the pool inside the object.
 const {pool} = require(__dirname + '/lib/dbconnect.js');
 
+// yesql ability to use named placeholders
+const yesql = require('yesql').pg;
+
+// used for checking and sanitizing user input
+const { check, validationResult } = require('express-validator');
+
 // const { Pool } = require('pg');
 // const pool = new Pool({
 //   connectionString: process.env.DATABASE_URL,
@@ -34,24 +40,23 @@ app.get('/getrate', handleGetrate);
 
 app.get('/db', handleDb);
 
-// test app.post
+///// GifChat  /////////
+var serverMessageId = 1000;     // global integer that tracks the current chat message number. start at 1000 for fun.
+var messages = [];              // global array of messages to hold all user chat messages in. We'll keep it to <= 100 messages
+const MAXMESSAGES = 100;        // max number of messages we keep available on the server. 
 
+// lines to enable proper POST extraction
 app.use(express.urlencoded({
   extended: true
 }));  // apparently I need urlencoded for this, not json.
 app.use(express.json()); // support json encoded requests
 
-// app.post('/retrieveuser', (req, res) => {
-//   let userId = req.body.userId;
-//   // let successText = 'You made a POST request!\nYou sent ' + userId;
-//   res.send(successText);
-// });
-
-app.post('/retrieveuser', (req, res) => {
+// Retrieve a user. This was mainly for testing purposes
+/* app.post('/retrieveuser', (req, res) => {
   let userId = req.body.userId;
   var resRows;
-  var sql1 = "SELECT * FROM user_account WHERE user_account_id = " + userId;
-  pool.query(sql1, function (err, result) {
+  var sql1 = "SELECT * FROM user_account WHERE user_account_id = :userId";    // Filter those DB queries! 
+  pool.query(yesql(sql1)({userId: userId}), function (err, result) {          //  using yesql!
     // If an error occurred...
     if (err || result.rowCount != 1) {
       res.status(500).json({ success: false, data: err });
@@ -66,7 +71,7 @@ app.post('/retrieveuser', (req, res) => {
     console.log(resRows);
     res.status(200).json(resRows);
   });
-});
+}); */
 
 app.post('/gifsearch', (req, res) => {
   let searchPhrase = req.body.searchPhrase;
@@ -81,7 +86,59 @@ app.post('/gifsearch', (req, res) => {
   });
 });
 
+app.post('/postmessage', [
+  check('username').trim().escape(),      // trim and escape the username and text of the message to avoid exploits
+  check('text').trim().escape()
+], (req, res) => {
+  let newMessage = req.body;
+  
+  // check the username is valid. For now we just call an empty function, hopefully we get to implement user validation
+  if (!validateUsername(newMessage)){
+    res.status(400).json({ success: false, data: 'Invalid username'});
+    return;
+  }
+
+  // Also to do: We need to add the gif mp4 link to the Message object
+
+  newMessage.messageId = serverMessageId++;   // add the current server ID to the message and then increment it
+  messages.push(newMessage);
+  if (messages.length > MAXMESSAGES) {
+    messages.shift(); // cut off the first one
+  }
+  res.status(200).send('Message posted!')
+  // res.status(200).json(newMessage);
+});
+
+app.post('/getmessages', (req, res) => {
+  // if messages is empty, return a blank array
+  if (messages.length === 0) {
+    res.status(200).json([]);
+    return;
+  }
+  // get the client's most recently retrieved message
+  let clientMessageId = req.body.clientMessageId;
+
+  // find what message in the array this corresponds to (to check: What happens if messages is empty?)
+  let curMessage = clientMessageId - messages[0].messageId;
+  if (curMessage < 0) {curMessage = -1;} // in this case, the client has possibly missed some messages, or it's just starting out
+
+  res.status(200).json(messages.slice(curMessage + 1)); // send back json array of messages sliced off the end  
+});
+
+
 ///// Control functions ////////
+//////////// gifchat functions //////////
+function validateUsername(message) {
+  // for now just make sure it's not blank
+  if (message.username === "") {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+
+///////////// other assignment functions //////////////////
 function handleGetrate (req, res) {
   let weight = Number(req.query.weight);
   let mailType = req.query.mail_type;
@@ -193,3 +250,8 @@ function calculateRate(weight, mailType) {
   }
   return rate;
 }
+
+// put this at the end to handle otherwise unhandled routes
+app.use(function (req, res, next) {
+  res.status(404).send('Sorry can\'t find that! <a href="/">Click here</a> to return to the main page.');
+});
