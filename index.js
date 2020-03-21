@@ -1,9 +1,12 @@
+var sslRedirect = require('heroku-ssl-redirect');
 const cool = require('cool-ascii-faces');
 const express = require('express');
 const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 const giphy = require('giphy-api')(); // use the public beta key for now
+
+app.use(sslRedirect()); // enforce ssl at heroku
 
 // get a pool from our dbconnect module. use the {pool} notation since our export is actually an object, 
 //  and we need the pool inside the object.
