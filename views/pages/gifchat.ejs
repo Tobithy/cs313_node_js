@@ -39,25 +39,24 @@
     </div> -->
 
     <div class="container pt-3">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" class="form-control" required>
-      </div>
+      <p>Welcome <strong><%= username %></strong>! <a href="/logout">Log out?</a></p>
+    </div>
+    <div class="container pt-3" id="messagediv">
       <div class="form-group">
         <label for="gifUrl">mp4 video link (optional)</label>
         <input type="text" id="gifUrl" class="form-control">
       </div>
       <div class="form-group">
-        <label for="message">Message</label>
+        <label for="message">Message (Ctrl+Enter sends)</label>
         <textarea id="message" class="form-control" rows="3"></textarea>
       </div>
       <button class="btn btn-primary" id="postMessage">Post Message</button>
     </div>
-        <div class="container">
-          <div class="alert alert-dismissible fade hide alert-danger" role="alert" id="messagenotpostedalert">
-            Message NOT posted. Check your username.
-          </div>
-        </div>
+    <div class="container">
+      <div class="alert alert-dismissible fade hide alert-danger" role="alert" id="messagenotpostedalert">
+        Unauthorized access, message not posted.
+      </div>
+    </div>
 
     <div class="container pt-3">
       <h2 class="display-5">Chat Area</h2>

@@ -2,11 +2,24 @@ var sslRedirect = require('heroku-ssl-redirect');
 const cool = require('cool-ascii-faces');
 const express = require('express');
 const app = express();
+const session = require('express-session');
+
 const path = require('path');
 const PORT = process.env.PORT || 5000;
-const giphy = require('giphy-api')(); // use the public beta key for now
+const giphy = require('giphy-api')(process.env.GIPHY_KEY); // keep API key in environment variable
 
 app.use(sslRedirect()); // enforce ssl at heroku
+
+// bcrypt
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+//session
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}))
 
 // get a pool from our dbconnect module. use the {pool} notation since our export is actually an object, 
 //  and we need the pool inside the object.
@@ -30,9 +43,6 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => res.render('pages/index'));
 app.get('/cool', (req, res) => res.send(cool()));
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
-
-// Node.js project - gifchat
-app.get('/gifchat', (req, res) => res.render('pages/gifchat'));
 
 
 //////////// Control //////////////////
@@ -76,6 +86,48 @@ app.use(express.json()); // support json encoded requests
   });
 }); */
 
+// Node.js project - gifchat
+app.get('/gifchat', (req, res) => {
+  // only show the Chat if the user is logged in
+  if (req.session.username) {
+    let params = {
+      username: req.session.username
+    };
+    res.render('pages/gifchat', params);
+  } else {
+    res.redirect('/gifchat_login');
+  }
+});
+
+app.get('/gifchat_login', (req, res) => {
+  if (req.session.username) {
+    res.redirect('/gifchat');
+  } else {
+    res.render('pages/gifchat_login');
+  }
+});
+
+// when the user actually tries to login
+app.post('/login', [
+  check('username').trim().escape()      // trim and escape the username to avoid exploits
+], async (req, res) => {
+  let username = req.body.username;
+  let password = req.body.password;
+  
+  let loginSuccess = await loginUser(username, password, req);
+  if (loginSuccess) {
+    res.status(200).json(req.session.username);
+  } else {
+    res.status(401).send("Invalid credentials");
+  }
+
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/gifchat_login');
+});
+
 app.post('/gifsearch', (req, res) => {
   let searchPhrase = req.body.searchPhrase;
   giphy.search(searchPhrase, (err, result) => {
@@ -90,26 +142,21 @@ app.post('/gifsearch', (req, res) => {
 });
 
 app.post('/postmessage', [
-  check('username').trim().escape(),      // trim and escape the username and text of the message to avoid exploits
   check('text').trim().escape()
 ], (req, res) => {
-  let newMessage = req.body;
-  
-  // check the username is valid. For now we just call an empty function, hopefully we get to implement user validation
-  if (!validateUsername(newMessage)){
-    res.status(400).json({ success: false, data: 'Invalid username'});
-    return;
-  }
+  if (!req.session.username) {
+    res.status(401).json({ success: false, data: 'Unauthorized'});
+  } else {
+    let newMessage = req.body;
+    newMessage.username = req.session.username;
 
-  // Also to do: We need to add the gif mp4 link to the Message object
-
-  newMessage.messageId = serverMessageId++;   // add the current server ID to the message and then increment it
-  messages.push(newMessage);
-  if (messages.length > MAXMESSAGES) {
-    messages.shift(); // cut off the first one
+    newMessage.messageId = serverMessageId++;   // add the current server ID to the message and then increment it
+    messages.push(newMessage);
+    if (messages.length > MAXMESSAGES) {
+      messages.shift(); // cut off the first one
+    }
+    res.status(200).send('Message posted!')
   }
-  res.status(200).send('Message posted!')
-  // res.status(200).json(newMessage);
 });
 
 app.post('/getmessages', (req, res) => {
@@ -131,12 +178,43 @@ app.post('/getmessages', (req, res) => {
 
 ///// Control functions ////////
 //////////// gifchat functions //////////
-function validateUsername(message) {
-  // for now just make sure it's not blank
-  if (message.username === "") {
-    return false;
+// async function so we can await. This logs in the user if they provided the correct username and password
+async function loginUser(username, password, req) { 
+  let resRows;
+  let sql1 = "SELECT hashed_password FROM user_account WHERE username = :username";    
+  try {
+    resRows = await pool.query(yesql(sql1)({ username: username }));   // Filter dbqueries using yesql
+  } catch(err) {
+    console.error(err);
+    return false; // db query failed, just return false for now
+  }
+  
+  if (resRows.rowCount === 0) {  // in this case the username doesn't exist yet
+    let hashedPassword = await bcrypt.hash(password, saltRounds); // use async/await
+    let sql2 = "INSERT INTO user_account(username, hashed_password) VALUES(:username, :hashedPassword)";
+    try {
+      await pool.query(yesql(sql2)({username: username, hashedPassword: hashedPassword}));
+      req.session.username = username;
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;   // db insert failed
+    }
+  } else if (resRows.rowCount === 1) {
+    // check that the user's password matches
+    // console.log(resRows.rows[0]);
+    let match = await bcrypt.compare(password, resRows.rows[0].hashed_password);
+    if (match) {
+      req.session.username = username;
+      return true;
+    } else {
+      console.log("Failed login for username: " + username);
+      return false;
+    }
   } else {
-    return true;
+    // we shouldn't get here
+    console.error("Too many db results!"); 
+    return false;
   }
 }
 

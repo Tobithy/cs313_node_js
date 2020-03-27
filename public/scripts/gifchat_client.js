@@ -10,11 +10,11 @@
 // });
 
 // Message constructor. This is the main data type we will pass back and forth to the server
-//  username - the current user's username (we will check this serverside and refuse to post if it doesn't match)
 //  text - the text of the message being posted (note: we need to )
 //  gifUrl - the url of a gif to include in the message. This is optional.
-function Message(username, text, gifUrl) {
-  this.username = username;
+var timeout;  // global timeout variable, used to cancel and restart message update loop
+
+function Message(text, gifUrl) {
   this.text = text;
   this.gifUrl = gifUrl;
 }
@@ -82,16 +82,16 @@ function postGif(event) {
 //   $("#classout").html(JSON.stringify(amessage));
 // })
 
-// create message and post to server. For testing right now, need to make username automatic
+// create message and post to server.
 $(document).ready(function() {
   $("#postMessage").click(function() {
     // make the message
-    let newMessage = new Message($("#username").val(), $("#message").val(), $("#gifUrl").val());
+    let newMessage = new Message($("#message").val(), $("#gifUrl").val());
     $.post({
       url: '/postmessage', 
       data: newMessage, 
       statusCode: {
-        400: function() {
+        401: function() {
           toggleHideShow($("#messagenotpostedalert"));
           setTimeout(toggleHideShow, 2000, $("#messagenotpostedalert"));
         },
@@ -99,6 +99,10 @@ $(document).ready(function() {
           console.log(data);
           $("#message").val('');
           $("#gifUrl").val('');
+
+          // interrupt the setTimeout loop and start it over, so we don't have to wait to see our message we just posted
+          clearTimeout(timeout);
+          doAjax();
         }
       }
     });
@@ -122,7 +126,7 @@ function doAjax() {
       });
     },
     complete: function () {
-      setTimeout(doAjax, interval);
+      timeout = setTimeout(doAjax, interval);
     }
   });
 }
@@ -152,21 +156,12 @@ function createHtmlMessage(message) {
 }
 
 
-// Function to click button when ctrl+enter is pressed in the Message textarea
+// Function to click button when ctrl+enter is pressed in the Message area
 $(document).ready(function () {
-  $("#message").keyup(function (e) {
+  $("#messagediv").keyup(function (e) {
     if ((e.ctrlKey || e.metaKey) && (e.keyCode == 13 || e.keyCode == 10)) {
       $("#postMessage").click();
     }
-  });
-});
-
-
-// button to show failed post, for TESTING ONLY!
-$(document).ready(function () {
-  $("#togglealert").click(function () {
-    toggleHideShow($("#messagenotpostedalert"));
-    setTimeout(toggleHideShow, 2000, $("#messagenotpostedalert"));
   });
 });
 
