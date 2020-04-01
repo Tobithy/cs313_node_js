@@ -31,12 +31,6 @@ const yesql = require('yesql').pg;
 // used for checking and sanitizing user input
 const { check, validationResult } = require('express-validator');
 
-// const { Pool } = require('pg');
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: true
-// });
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -63,28 +57,6 @@ app.use(express.urlencoded({
   extended: true
 }));  // apparently I need urlencoded for this, not json.
 app.use(express.json()); // support json encoded requests
-
-// Retrieve a user. This was mainly for testing purposes
-/* app.post('/retrieveuser', (req, res) => {
-  let userId = req.body.userId;
-  var resRows;
-  var sql1 = "SELECT * FROM user_account WHERE user_account_id = :userId";    // Filter those DB queries! 
-  pool.query(yesql(sql1)({userId: userId}), function (err, result) {          //  using yesql!
-    // If an error occurred...
-    if (err || result.rowCount != 1) {
-      res.status(500).json({ success: false, data: err });
-      console.log("Error in query: ")
-      console.log(err);
-      return;
-    }
-
-    // Log this to the console for debugging purposes.
-    console.log("Back from DB with result:");
-    resRows = result.rows;
-    console.log(resRows);
-    res.status(200).json(resRows);
-  });
-}); */
 
 // Node.js project - gifchat
 app.get('/gifchat', (req, res) => {
@@ -256,28 +228,6 @@ async function handleDb (req, res) {
     res.render('pages/db', results);
   });
 }
-
-// app.get('/getuser', function (req, res) {
-//   let userId = req.query.userId;
-//   var resRows;
-//   var sql1 = "SELECT * FROM user_account WHERE user_account_id = " + userId;
-//   pool.query(sql1, function (err, result) {
-//     // If an error occurred...
-//     if (err || result.rowCount != 1) {
-//       res.status(500).json({success: false, data: err});
-//       console.log("Error in query: ")
-//       console.log(err);
-//       return;
-//     }
-
-//     // Log this to the console for debugging purposes.
-//     console.log("Back from DB with result:");
-//     resRows = result.rows;
-//     // resRows = [resRows[0], resRows[0]];
-//     console.log(resRows);
-//     res.status(200).json(resRows);
-//   });
-// });
 
 
 //////////// Model (business logic) ////////////////

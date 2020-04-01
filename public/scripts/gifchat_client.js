@@ -1,19 +1,8 @@
-// AJAX to get and display user information. This was mainly for testing purposes.
-// $(document).ready(function () {
-//   $("#retrieveUserInfo").click(function () {
-//     let user = { userId: $("#userId").val()};
-//     $.post("/retrieveuser", user, function(data, status) {
-//       let user = data[0];
-//       $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
-//     });
-//   });
-// });
-
-// Message constructor. This is the main data type we will pass back and forth to the server
-//  text - the text of the message being posted (note: we need to )
-//  gifUrl - the url of a gif to include in the message. This is optional.
 var timeout;  // global timeout variable, used to cancel and restart message update loop
 
+// Message constructor. This is the main data type we will pass back and forth to the server
+//  text - the text of the message being posted 
+//  gifUrl - the url of a gif to include in the message. This is optional.
 function Message(text, gifUrl) {
   this.text = text;
   this.gifUrl = gifUrl;
@@ -49,7 +38,6 @@ $(document).ready(function () {
       $(".clickableGif").click(postGif);    // this is what makes it possible for a gif to be posted. 
     });
   });
-
 });
 
 // Function to click button when enter is pressed in the Search GIPHY area
@@ -65,22 +53,6 @@ $(document).ready(function () {
 function postGif(event) {
   $("#gifUrl").val(event.currentTarget.id);
 }
-
-
-// let amessage = new Message("tobit", "Hello, and welcome to my chat room");
-// amessage.newprop = "this is a new property";
-
-// $.post("/postmessage", amessage, function (data, status) {
-//   let anothermessage = data;
-//   console.log(anothermessage);
-//   console.log(!!anothermessage.gifId)
-//   // $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
-// });
-
-
-// $(document).ready(function() {
-//   $("#classout").html(JSON.stringify(amessage));
-// })
 
 // create message and post to server.
 $(document).ready(function() {

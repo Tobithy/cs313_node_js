@@ -1,14 +1,3 @@
-// AJAX to get and display user information. This was mainly for testing purposes.
-// $(document).ready(function () {
-//   $("#retrieveUserInfo").click(function () {
-//     let user = { userId: $("#userId").val()};
-//     $.post("/retrieveuser", user, function(data, status) {
-//       let user = data[0];
-//       $("#userinfo").html("<p>User info: " + JSON.stringify(user) + "</p>");
-//     });
-//   });
-// });
-
 // Function to click button when enter is pressed in the login area
 $(document).ready(function () {
   $("#login_area").keyup(function (e) {
